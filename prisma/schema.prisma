@@ -12,3 +12,13 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model registrasi {
+  no_register     String   @unique @db.VarChar(30)
+  tgl_register    DateTime @default(now()) @db.Date
+  nama_aset       String   @db.VarChar(255)
+  lokasi          String?  @db.VarChar(50)
+  department      String?  @db.VarChar(50)
+  harga_perolehan Float?
+  asset_user      String?  @db.VarChar(25)
+}

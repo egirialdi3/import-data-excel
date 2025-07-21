@@ -1,17 +1,20 @@
-// app/api/import/status/route.ts
+import redis from '@/lib/redis';
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
 
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const jobId = searchParams.get('job_id');
-    const statusFile = path.join('/tmp', `import-${jobId}.status`);
 
-    try {
-        const content = await fs.readFile(statusFile, 'utf-8');
-        return NextResponse.json(JSON.parse(content));
-    } catch {
-        return NextResponse.json({ status: 'not_found' }, { status: 404 });
+    if (!jobId) {
+        return NextResponse.json({ error: 'Missing job_id parameter' }, { status: 400 });
     }
+
+    const progress = await redis.get(`import:${jobId}:progress`);
+
+    if (!progress) {
+        return NextResponse.json({ error: 'Job not found' }, { status: 404 });
+    }
+
+    const data = JSON.parse(progress);
+    return NextResponse.json({ data });
 }

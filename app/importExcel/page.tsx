@@ -41,8 +41,10 @@ export default function ImportAsset() {
 
     const interval = setInterval(async () => {
       const res = await fetch(`/api/import/statusExcel?job_id=${jobId}`)
-      const data = await res.json()
+      const dt = await res.json()
+      const data = dt.data;
 
+      console.log(data)
       setStatus(data.status || 'not_found')
 
       if (data.progress !== undefined) {
