@@ -1,4 +1,5 @@
-import redis from '@/lib/redis';
+// import redis from '@/lib/redis';
+import { redis } from '@/lib/redisUpstash';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
@@ -11,10 +12,11 @@ export async function GET(req: NextRequest) {
 
     const progress = await redis.get(`import:${jobId}:progress`);
 
-    if (!progress) {
-        return NextResponse.json({ error: 'Job not found' }, { status: 404 });
-    }
+    console.log(progress)
+    // if (typeof progress !== 'string') {
+    //     return NextResponse.json({ error: 'Invalid progress data' }, { status: 500 });
+    // }
 
-    const data = JSON.parse(progress);
-    return NextResponse.json({ data });
+    // const data = JSON.parse(progress);
+    return NextResponse.json({ data: progress });
 }
