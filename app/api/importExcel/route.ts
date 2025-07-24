@@ -70,6 +70,8 @@ export async function POST(req: NextRequest) {
             status: 'done',
             progress: 100,
         }));
+
+        await redis.expire(`import:${jobId}:progress`, 180);
     }, 100);
 
     return NextResponse.json({ jobId });
